@@ -1,6 +1,6 @@
-package org.x98zy.factory;
+package by.dosin.first.factory;
 
-import org.x98zy.entity.IntArray;
+import by.dosin.first.entity.IntArray;
 
 public class IntArrayFactory {
 

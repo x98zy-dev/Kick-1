@@ -1,4 +1,4 @@
-package org.x98zy.entity;
+package by.dosin.first.entity;
 
 public class IntArray {
 
