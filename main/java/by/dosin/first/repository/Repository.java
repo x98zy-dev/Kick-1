@@ -4,7 +4,7 @@ import by.dosin.first.entity.IntArray;
 import java.util.List;
 import java.util.Optional;
 
-public interface ArrayRepository {
+public interface Repository {
     void add(IntArray array);
     void remove(String id);
     Optional<IntArray> getById(String id);

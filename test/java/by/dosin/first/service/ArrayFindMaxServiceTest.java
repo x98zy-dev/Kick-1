@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ArrayFindMaxTest {
+class ArrayFindMaxServiceTest {
 
     private ArrayFindMaxService maxService;
     private IntArray testArray;

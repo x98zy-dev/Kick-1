@@ -1,24 +1,24 @@
 package by.dosin.first.repository.impl;
 
 import by.dosin.first.entity.IntArray;
-import by.dosin.first.repository.ArrayRepository;
+import by.dosin.first.repository.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class ArrayRepositoryImpl implements ArrayRepository {
-    private static ArrayRepositoryImpl instance;
+public class RepositoryImpl implements Repository {
+    private static RepositoryImpl instance;
     private final ConcurrentMap<String, IntArray> storage;
 
-    private ArrayRepositoryImpl() {
+    private RepositoryImpl() {
         this.storage = new ConcurrentHashMap<>();
     }
 
-    public static synchronized ArrayRepositoryImpl getInstance() {
+    public static synchronized RepositoryImpl getInstance() {
         if (instance == null) {
-            instance = new ArrayRepositoryImpl();
+            instance = new RepositoryImpl();
         }
         return instance;
     }
