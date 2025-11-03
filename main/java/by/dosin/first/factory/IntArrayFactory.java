@@ -4,22 +4,26 @@ import by.dosin.first.entity.IntArray;
 
 public class IntArrayFactory {
 
-    public static final String EMPTY_ARRAY_MESSAGE = "Создан пустой массив";
-
     private IntArrayFactory() {
-
     }
 
-    public static IntArray createEmpty() {
-        return new IntArray(new int[0]);
+    public static IntArray createWithIdAndName(String id, String name, int[] array) {
+        return new IntArray(id, name, array);
     }
 
-    public static IntArray createFromArray(int[] array) {
+    public static IntArray createEmpty(String id, String name) {
+        return new IntArray(id, name, new int[0]);
+    }
+
+    public static IntArray createFromArray(String id, String name, int[] array) {
         if (array != null) {
-            return new IntArray(array);
+            return new IntArray(id, name, array);
+        } else {
+            return createEmpty(id, name);
         }
-        else {
-           return createEmpty();
-        }
+    }
+
+    public static IntArray createWithValues(String id, String name, int... values) {
+        return new IntArray(id, name, values);
     }
 }

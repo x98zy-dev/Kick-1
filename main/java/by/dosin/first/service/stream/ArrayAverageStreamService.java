@@ -1,4 +1,4 @@
-package by.dosin.first.service.impl;
+package by.dosin.first.service.stream;
 
 import by.dosin.first.entity.IntArray;
 import by.dosin.first.exception.ArrayAppException;
@@ -6,21 +6,24 @@ import by.dosin.first.service.api.AverageService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ArrayAverageService implements AverageService {
+import java.util.Arrays;
 
-    private static final Logger LOGGER = LogManager.getLogger(ArrayAverageService.class);
+public class ArrayAverageStreamService implements AverageService {
+
+    private static final Logger LOGGER = LogManager.getLogger(ArrayAverageStreamService.class);
 
     @Override
     public double calculateAverage(IntArray array) throws ArrayAppException {
-        LOGGER.debug("Calculating average for array: {}", array);
+        LOGGER.debug("Calculating average using Stream API: {}", array);
 
         if (array.length() == 0) {
             LOGGER.error("Cannot calculate average for empty array");
             throw new ArrayAppException("Cannot calculate average for empty array");
         }
 
-        int sum = calculateSum(array);
-        double average = (double) sum / array.length();
+        double average = Arrays.stream(array.getArray())
+                .average()
+                .orElseThrow(() -> new ArrayAppException("Unexpected error calculating average"));
 
         LOGGER.info("Average calculated: {}", average);
         return average;
@@ -28,14 +31,9 @@ public class ArrayAverageService implements AverageService {
 
     @Override
     public int calculateSum(IntArray array) {
-        LOGGER.debug("Calculating sum for array: {}", array);
+        LOGGER.debug("Calculating sum using Stream API: {}", array);
 
-        int[] elements = array.getArray();
-        int sum = 0;
-
-        for (int element : elements) {
-            sum += element;
-        }
+        int sum = Arrays.stream(array.getArray()).sum();
 
         LOGGER.debug("Sum calculated: {}", sum);
         return sum;

@@ -8,23 +8,19 @@ public class ArraySelectionSorter implements Sorter {
 
     @Override
     public IntArray sortArray(IntArray unsortedArray) {
-
         int[] sortedArray = unsortedArray.getArray().clone();
-        int lenght = sortedArray.length;
+        int length = sortedArray.length;
 
-        for(int i = 0; i < lenght - 1; i++) {
+        for(int i = 0; i < length - 1; i++) {
             int minIndex = i;
 
-            for(int j = i + 1; j < lenght - 1; j++) {
-
-                if(sortedArray[j] < sortedArray[minIndex])
-                {
+            for(int j = i + 1; j < length; j++) {
+                if(sortedArray[j] < sortedArray[minIndex]) {
                     minIndex = j;
                 }
             }
 
-            if(minIndex != i)
-            {
+            if(minIndex != i) {
                 int temp = sortedArray[i];
                 sortedArray[i] = sortedArray[minIndex];
                 sortedArray[minIndex] = temp;
