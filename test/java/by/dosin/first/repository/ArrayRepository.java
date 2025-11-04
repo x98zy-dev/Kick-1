@@ -32,12 +32,21 @@ public class ArrayRepository {
     }
 
     public void add(IntArray array) throws ArrayAppException {
+        if (array == null) {
+            throw new ArrayAppException("Array cannot be null");
+        }
+        if (contains(array.getId())) {
+            throw new ArrayAppException("Array with id " + array.getId() + " already exists");
+        }
         storage.add(array);
         array.attach(arrayObserver);
         arrayObserver.onArrayChanged(array);
     }
 
     public void removeById(String id) throws ArrayAppException {
+        if (id == null || id.isBlank()) {
+            throw new ArrayAppException("ID cannot be null or empty");
+        }
         boolean removed = storage.removeIf(array -> {
             if (array.getId().equals(id)) {
                 array.detach(arrayObserver);
@@ -45,6 +54,9 @@ public class ArrayRepository {
             }
             return false;
         });
+        if (!removed) {
+            throw new ArrayAppException("Array with id " + id + " not found");
+        }
         Warehouse.getInstance().removeStats(id);
     }
 

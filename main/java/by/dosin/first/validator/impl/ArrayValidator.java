@@ -1,6 +1,5 @@
 package by.dosin.first.validator.impl;
 
-import by.dosin.first.exception.ArrayAppException;
 import by.dosin.first.validator.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,8 +27,8 @@ public class ArrayValidator implements Validator {
         for(String numStr : numbersString) {
             String trimmed = numStr.trim();
 
-            if (!trimmed.isBlank()) {
-                if(!trimmed.matches(NUMBER_REGEX)) {
+            if (!trimmed.isBlank() && !trimmed.matches(NUMBER_REGEX)) {
+                {
                     LOGGER.warn("Invalid number format: '{}'", trimmed);
                     return false;
                 }

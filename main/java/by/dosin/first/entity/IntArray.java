@@ -2,12 +2,13 @@ package by.dosin.first.entity;
 
 import by.dosin.first.exception.ArrayAppException;
 import by.dosin.first.observer.ArrayObserver;
+import by.dosin.first.observer.ObservableEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Objects;
 
-public class IntArray {
+public class IntArray implements ObservableEntity {
     private final String id;
     private int[] array;
     private final List<ArrayObserver> observers;
@@ -24,15 +25,20 @@ public class IntArray {
         this.observers = new ArrayList<>();
     }
 
+    @Override
     public void attach(ArrayObserver observer) {
-        observers.add(observer);
+        if (observer != null && !observers.contains(observer)) {
+            observers.add(observer);
+        }
     }
 
+    @Override
     public void detach(ArrayObserver observer) {
         observers.remove(observer);
     }
 
-    private void notifyObservers() {
+    @Override
+    public void notifyObservers() {
         for (ArrayObserver observer : observers) {
             observer.onArrayChanged(this);
         }
@@ -59,16 +65,6 @@ public class IntArray {
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("IntArray{");
-        sb.append("id='").append(id).append('\'');
-        sb.append(", array=").append(Arrays.toString(array));
-        sb.append('}');
-        return sb.toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -78,6 +74,13 @@ public class IntArray {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, Arrays.hashCode(array));
+        int result = id.hashCode();
+        result = 31 * result + Arrays.hashCode(array);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "IntArray{id='" + id + "', array=" + Arrays.toString(array) + "}";
     }
 }

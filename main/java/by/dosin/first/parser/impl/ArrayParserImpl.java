@@ -9,7 +9,6 @@ import by.dosin.first.validator.impl.ArrayValidator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.dosin.first.parser.ArrayParser.DELIMITER_REGEX;
 
 public class ArrayParserImpl implements ArrayParser {
 

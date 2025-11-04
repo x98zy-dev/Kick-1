@@ -2,14 +2,13 @@ package by.dosin.first.warehouse;
 
 import by.dosin.first.entity.ArrayData;
 import by.dosin.first.entity.IntArray;
-import by.dosin.first.observer.ArrayObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Warehouse implements ArrayObserver {
+public class Warehouse {
     private static final Logger LOGGER = LogManager.getLogger(Warehouse.class);
     private static Warehouse instance;
     private final Map<String, ArrayData> data;
@@ -26,7 +25,6 @@ public class Warehouse implements ArrayObserver {
         return instance;
     }
 
-    @Override
     public void onArrayChanged(IntArray array) {
         LOGGER.debug("Array changed: {}", array.getId());
         ArrayData stats = calculateArrayData(array);

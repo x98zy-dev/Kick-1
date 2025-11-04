@@ -4,7 +4,6 @@ import by.dosin.first.entity.ArrayData;
 import by.dosin.first.entity.IntArray;
 import by.dosin.first.exception.ArrayAppException;
 import by.dosin.first.factory.IntArrayFactory;
-import by.dosin.first.observer.ArrayObserver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,8 +29,8 @@ class WarehouseTest {
     }
 
     @Test
-    void testRegisterArray() {
-        warehouse.register(testArray);
+    void testOnArrayChanged() {
+        warehouse.onArrayChanged(testArray);
 
         ArrayData stats = warehouse.getStats("arr1");
 
@@ -43,8 +42,8 @@ class WarehouseTest {
     }
 
     @Test
-    void testRegisterEmptyArray() {
-        warehouse.register(emptyArray);
+    void testOnArrayChangedEmptyArray() {
+        warehouse.onArrayChanged(emptyArray);
 
         ArrayData stats = warehouse.getStats("empty");
 
@@ -56,11 +55,11 @@ class WarehouseTest {
     }
 
     @Test
-    void testUpdateObserver() throws ArrayAppException {
-        warehouse.register(testArray);
+    void testOnArrayChangedUpdate() throws ArrayAppException {
+        warehouse.onArrayChanged(testArray);
 
-        // Изменяем массив - должен автоматически обновиться Warehouse
         testArray.setArray(new int[]{10, 20, 30});
+        warehouse.onArrayChanged(testArray);
 
         ArrayData stats = warehouse.getStats("arr1");
 
@@ -79,7 +78,7 @@ class WarehouseTest {
 
     @Test
     void testRemoveStats() {
-        warehouse.register(testArray);
+        warehouse.onArrayChanged(testArray);
 
         warehouse.removeStats("arr1");
 
@@ -89,7 +88,6 @@ class WarehouseTest {
 
     @Test
     void testRemoveNonExistentStats() {
-        // Не должно бросать исключение
         assertDoesNotThrow(() -> {
             warehouse.removeStats("nonexistent");
         });
@@ -97,8 +95,8 @@ class WarehouseTest {
 
     @Test
     void testClearWarehouse() {
-        warehouse.register(testArray);
-        warehouse.register(emptyArray);
+        warehouse.onArrayChanged(testArray);
+        warehouse.onArrayChanged(emptyArray);
 
         warehouse.clear();
 
@@ -109,7 +107,7 @@ class WarehouseTest {
     @Test
     void testCalculateArrayDataWithNegativeNumbers() throws ArrayAppException {
         IntArray negativeArray = IntArrayFactory.create("negative", new int[]{-5, -2, -8, -1});
-        warehouse.register(negativeArray);
+        warehouse.onArrayChanged(negativeArray);
 
         ArrayData stats = warehouse.getStats("negative");
 
@@ -122,7 +120,7 @@ class WarehouseTest {
     @Test
     void testCalculateArrayDataSingleElement() throws ArrayAppException {
         IntArray singleArray = IntArrayFactory.create("single", new int[]{42});
-        warehouse.register(singleArray);
+        warehouse.onArrayChanged(singleArray);
 
         ArrayData stats = warehouse.getStats("single");
 
@@ -133,23 +131,10 @@ class WarehouseTest {
     }
 
     @Test
-    void testMultipleObservers() throws ArrayAppException {
-        ArrayObserver customObserver = new ArrayObserver() {
-            @Override
-            public void update(IntArray array) {
-            }
-        };
+    void testSingletonInstance() {
+        Warehouse instance1 = Warehouse.getInstance();
+        Warehouse instance2 = Warehouse.getInstance();
 
-        testArray.addObserver(warehouse);
-        testArray.addObserver(customObserver);
-
-        assertDoesNotThrow(() -> {
-            testArray.setArray(new int[]{100, 200});
-        });
-
-        ArrayData stats = warehouse.getStats("arr1");
-        assertEquals(300, stats.getSum());
-
-        testArray.removeObserver(customObserver);
+        assertSame(instance1, instance2);
     }
 }
