@@ -2,6 +2,7 @@
 package by.dosin.first.reader;
 
 import by.dosin.first.exception.ArrayAppException;
+import by.dosin.first.reader.impl.ArrayFileReaderImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -13,13 +14,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ArrayFileReaderTest {
+class ArrayArrayFileReaderImplTest {
 
-    private ArrayFileReader fileReader;
+    private ArrayFileReaderImpl fileReader;
 
     @BeforeEach
     void setUp() {
-        fileReader = new ArrayFileReader();
+        fileReader = new ArrayFileReaderImpl();
     }
 
     @Test
@@ -27,7 +28,7 @@ class ArrayFileReaderTest {
         Path testFile = tempDir.resolve("test.txt");
         Files.write(testFile, List.of("1,2,3", "4,5,6", "7,8,9"));
 
-        ArrayFileReader reader = new ArrayFileReader() {
+        ArrayFileReaderImpl reader = new ArrayFileReaderImpl() {
             @Override
             public List<String> readLinesFromFile(String filename) {
                 try {
@@ -48,7 +49,7 @@ class ArrayFileReaderTest {
         Path testFile = tempDir.resolve("arrays.txt");
         Files.write(testFile, List.of("1,2,3", "4,5,6"));
 
-        ArrayFileReader reader = new ArrayFileReader() {
+        ArrayFileReaderImpl reader = new ArrayFileReaderImpl() {
             @Override
             public List<String> readLinesFromFile(String filename) {
                 try {
@@ -76,7 +77,7 @@ class ArrayFileReaderTest {
         Path testFile = tempDir.resolve("empty.txt");
         Files.createFile(testFile);
 
-        ArrayFileReader reader = new ArrayFileReader() {
+        ArrayFileReaderImpl reader = new ArrayFileReaderImpl() {
             @Override
             public List<String> readLinesFromFile(String filename) {
                 try {

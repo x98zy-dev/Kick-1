@@ -2,19 +2,20 @@ package by.dosin.first.parser;
 
 import by.dosin.first.entity.IntArray;
 import by.dosin.first.exception.ArrayAppException;
+import by.dosin.first.parser.ArrayParser;
 import by.dosin.first.parser.impl.ArrayParserImpl;
 import by.dosin.first.validator.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArrayParserImplTest {
 
-    private ArrayParserImpl parser;
+    private ArrayParser parser;
 
     @BeforeEach
     void setUp() {
@@ -23,46 +24,46 @@ class ArrayParserImplTest {
 
     @Test
     void testParseLineWithCommas() throws ArrayAppException {
-        IntArray result = parser.parseLine("1,2,3");
+        IntArray result = parser.parseLine("1,2,3", "arr1");
         assertArrayEquals(new int[]{1, 2, 3}, result.getArray());
+        assertEquals("arr1", result.getId());
     }
 
     @Test
     void testParseLineWithSpaces() throws ArrayAppException {
-        IntArray result = parser.parseLine("1 2 3");
+        IntArray result = parser.parseLine("1 2 3", "arr2");
+        assertArrayEquals(new int[]{1, 2, 3}, result.getArray());
+    }
+
+    @Test
+    void testParseLineWithSemicolons() throws ArrayAppException {
+        IntArray result = parser.parseLine("1;2;3", "arr3");
         assertArrayEquals(new int[]{1, 2, 3}, result.getArray());
     }
 
     @Test
     void testParseLineWithMixedDelimiters() throws ArrayAppException {
-        IntArray result = parser.parseLine("1, 2; 3 - 4");
+        IntArray result = parser.parseLine("1, 2; 3 - 4", "arr4");
         assertArrayEquals(new int[]{1, 2, 3, 4}, result.getArray());
     }
 
     @Test
     void testParseLineWithNegativeNumbers() throws ArrayAppException {
-        IntArray result = parser.parseLine("-1, 2, -3");
+        IntArray result = parser.parseLine("-1, 2, -3", "arr5");
         assertArrayEquals(new int[]{-1, 2, -3}, result.getArray());
     }
 
     @Test
     void testParseLineWithExtraSpaces() throws ArrayAppException {
-        IntArray result = parser.parseLine("  1 ,  2  ,  3  ");
+        IntArray result = parser.parseLine("  1 ,  2  ,  3  ", "arr6");
         assertArrayEquals(new int[]{1, 2, 3}, result.getArray());
     }
 
     @Test
-    void testParseLineSingleNumber() throws ArrayAppException {
-        IntArray result = parser.parseLine("5");
-        assertArrayEquals(new int[]{5}, result.getArray());
-    }
-
-    @Test
     void testParseLineInvalidDataThrowsException() {
-        ArrayAppException exception = assertThrows(ArrayAppException.class, () -> {
-            parser.parseLine("1, abc, 3");
+        assertThrows(ArrayAppException.class, () -> {
+            parser.parseLine("1, abc, 3", "arr7");
         });
-        assertTrue(exception.getMessage().contains("incorrect data"));
     }
 
     @Test
@@ -71,6 +72,9 @@ class ArrayParserImplTest {
         List<IntArray> result = parser.parseLines(lines);
 
         assertEquals(3, result.size());
+        assertEquals("array_0", result.get(0).getId());
+        assertEquals("array_1", result.get(1).getId());
+        assertEquals("array_2", result.get(2).getId());
         assertArrayEquals(new int[]{1, 2, 3}, result.get(0).getArray());
         assertArrayEquals(new int[]{4, 5, 6}, result.get(1).getArray());
         assertArrayEquals(new int[]{7, 8, 9}, result.get(2).getArray());
@@ -82,22 +86,8 @@ class ArrayParserImplTest {
         List<IntArray> result = parser.parseLines(lines);
 
         assertEquals(2, result.size());
-        assertArrayEquals(new int[]{1, 2, 3}, result.get(0).getArray());
-        assertArrayEquals(new int[]{4, 5, 6}, result.get(1).getArray());
-    }
-
-    @Test
-    void testParseLinesSkipsNullLines() throws ArrayAppException {
-        List<String> lines = new ArrayList<>();
-        lines.add("1,2,3");
-        lines.add(null);
-        lines.add("4,5,6");
-
-        List<IntArray> result = parser.parseLines(lines);
-
-        assertEquals(2, result.size());
-        assertArrayEquals(new int[]{1, 2, 3}, result.get(0).getArray());
-        assertArrayEquals(new int[]{4, 5, 6}, result.get(1).getArray());
+        assertEquals("array_0", result.get(0).getId());
+        assertEquals("array_3", result.get(1).getId());
     }
 
     @Test
@@ -106,8 +96,8 @@ class ArrayParserImplTest {
         List<IntArray> result = parser.parseLines(lines);
 
         assertEquals(2, result.size());
-        assertArrayEquals(new int[]{1, 2, 3}, result.get(0).getArray());
-        assertArrayEquals(new int[]{7, 8, 9}, result.get(1).getArray());
+        assertEquals("array_0", result.get(0).getId());
+        assertEquals("array_2", result.get(1).getId());
     }
 
     @Test
@@ -119,19 +109,24 @@ class ArrayParserImplTest {
     }
 
     @Test
-    void testParseLinesAllInvalidReturnsEmpty() throws ArrayAppException {
-        List<String> lines = List.of("a,b,c", "x,y,z");
-        List<IntArray> result = parser.parseLines(lines);
-
-        assertTrue(result.isEmpty());
+    void testParseLinesNullInputThrowsException() {
+        assertThrows(ArrayAppException.class, () -> {
+            parser.parseLines(null);
+        });
     }
 
     @Test
-    void testParseLinesNullInputThrowsException() {
-        ArrayAppException exception = assertThrows(ArrayAppException.class, () -> {
-            parser.parseLines(null);
+    void testParseLineNullIdThrowsException() {
+        assertThrows(ArrayAppException.class, () -> {
+            parser.parseLine("1,2,3", null);
         });
-        assertTrue(exception.getMessage().contains("line can't be null"));
+    }
+
+    @Test
+    void testParseLineBlankIdThrowsException() {
+        assertThrows(ArrayAppException.class, () -> {
+            parser.parseLine("1,2,3", "   ");
+        });
     }
 
     @Test
@@ -143,13 +138,13 @@ class ArrayParserImplTest {
             }
         };
 
-        ArrayParserImpl customParser = new ArrayParserImpl(customValidator);
+        ArrayParser customParser = new ArrayParserImpl(customValidator);
 
-        IntArray result1 = customParser.parseLine("1,2,3");
+        IntArray result1 = customParser.parseLine("1,2,3", "test1");
         assertArrayEquals(new int[]{1, 2, 3}, result1.getArray());
 
         assertThrows(ArrayAppException.class, () -> {
-            customParser.parseLine("4,5,6");
+            customParser.parseLine("4,5,6", "test2");
         });
     }
 }

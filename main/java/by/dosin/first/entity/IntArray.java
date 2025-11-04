@@ -10,7 +10,7 @@ import java.util.Objects;
 public class IntArray {
     private final String id;
     private int[] array;
-    private final List<ArrayObserver> observers = new ArrayList<>();
+    private final List<ArrayObserver> observers;
 
     public IntArray(String id, int[] array) throws ArrayAppException {
         if (id == null || id.isBlank()) {
@@ -21,19 +21,20 @@ public class IntArray {
         }
         this.id = id;
         this.array = array.clone();
+        this.observers = new ArrayList<>();
     }
 
-    public void addObserver(ArrayObserver observer) {
+    public void attach(ArrayObserver observer) {
         observers.add(observer);
     }
 
-    public void removeObserver(ArrayObserver observer) {
+    public void detach(ArrayObserver observer) {
         observers.remove(observer);
     }
 
     private void notifyObservers() {
         for (ArrayObserver observer : observers) {
-            observer.update(this);
+            observer.onArrayChanged(this);
         }
     }
 

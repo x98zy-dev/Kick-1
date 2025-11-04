@@ -12,9 +12,10 @@ import java.util.Map;
 public class Warehouse implements ArrayObserver {
     private static final Logger LOGGER = LogManager.getLogger(Warehouse.class);
     private static Warehouse instance;
-    private final Map<String, ArrayData> data = new HashMap<>();
+    private final Map<String, ArrayData> data;
 
     private Warehouse() {
+        this.data = new HashMap<>();
         LOGGER.debug("Warehouse initialized");
     }
 
@@ -25,15 +26,9 @@ public class Warehouse implements ArrayObserver {
         return instance;
     }
 
-    public void register(IntArray array) {
-        LOGGER.debug("Registering array in warehouse: {}", array.getId());
-        array.addObserver(this);
-        update(array);
-    }
-
     @Override
-    public void update(IntArray array) {
-        LOGGER.debug("Updating stats for array: {}", array.getId());
+    public void onArrayChanged(IntArray array) {
+        LOGGER.debug("Array changed: {}", array.getId());
         ArrayData stats = calculateArrayData(array);
         data.put(array.getId(), stats);
         LOGGER.info("Stats updated for array: {}", array.getId());
