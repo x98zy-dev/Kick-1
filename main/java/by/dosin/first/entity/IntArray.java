@@ -1,45 +1,56 @@
 package by.dosin.first.entity;
 
+import by.dosin.first.exception.ArrayAppException;
+import by.dosin.first.observer.ArrayObserver;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class IntArray {
     private final String id;
-    private final String name;
     private int[] array;
+    private final List<ArrayObserver> observers = new ArrayList<>();
 
-    public IntArray(String id, String name, int[] array) {
+    public IntArray(String id, int[] array) throws ArrayAppException {
         if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("ID cannot be null or empty");
-        }
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
+            throw new ArrayAppException("ID cannot be null or empty");
         }
         if (array == null) {
-            throw new IllegalArgumentException("Array cannot be null");
+            throw new ArrayAppException("Array cannot be null");
         }
-
         this.id = id;
-        this.name = name;
         this.array = array.clone();
+    }
+
+    public void addObserver(ArrayObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(ArrayObserver observer) {
+        observers.remove(observer);
+    }
+
+    private void notifyObservers() {
+        for (ArrayObserver observer : observers) {
+            observer.update(this);
+        }
+    }
+
+    public void setArray(int[] array) throws ArrayAppException {
+        if (array == null) {
+            throw new ArrayAppException("Array cannot be null");
+        }
+        this.array = array.clone();
+        notifyObservers();
     }
 
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public int[] getArray() {
         return array.clone();
-    }
-
-    public void setArray(int[] array) {
-        if (array == null) {
-            throw new IllegalArgumentException("Array cannot be null");
-        }
-        this.array = array.clone();
     }
 
     public int length() {
@@ -48,11 +59,12 @@ public class IntArray {
 
     @Override
     public String toString() {
-        return "IntArray{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", array=" + Arrays.toString(array) +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("IntArray{");
+        sb.append("id='").append(id).append('\'');
+        sb.append(", array=").append(Arrays.toString(array));
+        sb.append('}');
+        return sb.toString();
     }
 
     @Override
@@ -60,11 +72,11 @@ public class IntArray {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IntArray intArray = (IntArray) o;
-        return id.equals(intArray.id);
+        return id.equals(intArray.id) && Arrays.equals(array, intArray.array);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hash(id, Arrays.hashCode(array));
     }
 }

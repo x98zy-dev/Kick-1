@@ -1,7 +1,7 @@
-package by.dosin.first.repository.impl;
+package by.dosin.first.queries.impl;
 
 import by.dosin.first.entity.IntArray;
-import by.dosin.first.repository.Specification;
+import by.dosin.first.queries.Specification;
 
 import java.util.function.Predicate;
 

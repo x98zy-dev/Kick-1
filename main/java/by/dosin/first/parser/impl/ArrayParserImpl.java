@@ -3,7 +3,6 @@ package by.dosin.first.parser.impl;
 import by.dosin.first.entity.IntArray;
 import by.dosin.first.exception.ArrayAppException;
 import by.dosin.first.factory.IntArrayFactory;
-import by.dosin.first.parser.Parser;
 import by.dosin.first.validator.Validator;
 import by.dosin.first.validator.impl.ArrayValidator;
 import org.apache.logging.log4j.LogManager;
@@ -12,16 +11,16 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayParser implements Parser {
+public class ArrayParserImpl implements by.dosin.first.parser.ArrayParser {
 
-    private static final Logger LOGGER = LogManager.getLogger(ArrayParser.class);
+    private static final Logger LOGGER = LogManager.getLogger(ArrayParserImpl.class);
     private final Validator validator;
 
-    public ArrayParser() {
+    public ArrayParserImpl() {
         this.validator = new ArrayValidator();
     }
 
-    public ArrayParser(Validator validator) {
+    public ArrayParserImpl(Validator validator) {
         this.validator = validator;
     }
 

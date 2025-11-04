@@ -6,7 +6,7 @@ import by.dosin.first.exception.ArrayAppException;
 import java.util.List;
 
 
-public interface Parser {
+public interface ArrayParser {
 
     String DELIMITER_REGEX = "[,\\s;\\-]+";
 

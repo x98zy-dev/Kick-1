@@ -2,7 +2,7 @@ package by.dosin.first.parser;
 
 import by.dosin.first.entity.IntArray;
 import by.dosin.first.exception.ArrayAppException;
-import by.dosin.first.parser.impl.ArrayParser;
+import by.dosin.first.parser.impl.ArrayParserImpl;
 import by.dosin.first.validator.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,13 +12,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ArrayParserTest {
+class ArrayParserImplTest {
 
-    private ArrayParser parser;
+    private ArrayParserImpl parser;
 
     @BeforeEach
     void setUp() {
-        parser = new ArrayParser();
+        parser = new ArrayParserImpl();
     }
 
     @Test
@@ -143,7 +143,7 @@ class ArrayParserTest {
             }
         };
 
-        ArrayParser customParser = new ArrayParser(customValidator);
+        ArrayParserImpl customParser = new ArrayParserImpl(customValidator);
 
         IntArray result1 = customParser.parseLine("1,2,3");
         assertArrayEquals(new int[]{1, 2, 3}, result1.getArray());

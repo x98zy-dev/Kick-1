@@ -10,12 +10,12 @@ public class ArrayValidator implements Validator {
     private static final Logger LOGGER = LogManager.getLogger(ArrayValidator.class);
 
     @Override
-    public boolean isValidLine(String line) throws ArrayAppException {
+    public boolean isValidLine(String line) {
         LOGGER.debug("Validating line: '{}'", line);
 
         if (line == null) {
             LOGGER.error("Line is null");
-            throw new ArrayAppException("line can't be null");
+            return false;
         }
 
         if (line.isBlank()) {
